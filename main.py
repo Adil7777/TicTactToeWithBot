@@ -1,6 +1,7 @@
 import pygame
 import sys
 from Bot import Bot
+import time
 
 
 class TicTacToe:
@@ -79,10 +80,6 @@ class TicTacToe:
                 self.board[row_1_col_1[0]][row_1_col_1[1]] = 'o'
                 self.query += 1
 
-            self.game_over = self.check_win(self.board, 'x')
-            if not self.game_over:
-                self.game_over = self.check_win(self.board, 'o')
-
             if not self.stop_game:
                 for row in range(3):
                     for col in range(3):
@@ -108,10 +105,20 @@ class TicTacToe:
             # else:
             #     self.game_over = self.check_win(self.board, 'o')
 
+            self.game_over = self.check_win(self.board, 'x')
+            if not self.game_over:
+                self.game_over = self.check_win(self.board, 'o')
+            pygame.display.update()
+
             if self.game_over:
                 self.stop_game = True
+                time.sleep(2)
                 self.screen.fill(self.black)
                 font = pygame.font.SysFont('stxingkai', 80)
+                if self.game_over == 'x':
+                    self.game_over = 'User win'
+                elif self.game_over == 'o':
+                    self.game_over = 'Bot win'
                 text_1 = font.render(self.game_over, True, self.white)
                 text_rect = text_1.get_rect()
                 text_x = self.screen.get_width() / 2 - text_rect.width / 2
