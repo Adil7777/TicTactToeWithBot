@@ -1,5 +1,6 @@
 import pygame
 import sys
+from Bot import Bot
 
 
 class TicTacToe:
@@ -20,6 +21,8 @@ class TicTacToe:
         self.board = [[0] * 3 for _ in range(3)]
         self.query = 0
         self.stop_game = False
+        self.bot_move = False
+        self.bot = Bot()
 
     def check_win(self, board, sign):
         zeroes = 0
@@ -62,11 +65,23 @@ class TicTacToe:
                     if self.board[row][col] == 0:
                         if self.query % 2 == 0:
                             self.board[row][col] = 'x'
-                        else:
-                            self.board[row][col] = 'o'
+                            self.bot_move = True
+                        # else:
+                        #     self.board[row][col] = 'o'
                         self.query += 1
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.start_game()
+
+            if self.query % 2 != 0 and self.bot_move and not self.stop_game:
+                row_1_col_1 = self.bot.bots_move(self.board)
+                self.bot_move = False
+                print(row_1_col_1)
+                self.board[row_1_col_1[0]][row_1_col_1[1]] = 'o'
+
+            if (self.query - 1) % 2 == 0:
+                self.game_over = self.check_win(self.board, 'x')
+            else:
+                self.game_over = self.check_win(self.board, 'o')
 
             if not self.stop_game:
                 for row in range(3):
@@ -87,10 +102,11 @@ class TicTacToe:
                             pygame.draw.circle(self.screen, self.white,
                                                (x + self.size_block // 2, y + self.size_block // 2),
                                                self.size_block // 2 - 3, 10)
-            if (self.query - 1) % 2 == 0:
-                self.game_over = self.check_win(self.board, 'x')
-            else:
-                self.game_over = self.check_win(self.board, 'o')
+
+            # if (self.query - 1) % 2 == 0:
+            #     self.game_over = self.check_win(self.board, 'x')
+            # else:
+            #     self.game_over = self.check_win(self.board, 'o')
 
             if self.game_over:
                 self.stop_game = True
