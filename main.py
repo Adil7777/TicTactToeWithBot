@@ -62,13 +62,13 @@ class TicTacToe:
                     x_mouse, y_mouse = pygame.mouse.get_pos()
                     col = x_mouse // (self.size_block + self.margin)
                     row = y_mouse // (self.size_block + self.margin)
-                    if self.board[row][col] == 0:
+                    if self.board[row][col] == 0 and not self.bot_move:
                         if self.query % 2 == 0:
                             self.board[row][col] = 'x'
                             self.bot_move = True
+                            self.query += 1
                         # else:
                         #     self.board[row][col] = 'o'
-                        self.query += 1
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.start_game()
 
@@ -77,10 +77,10 @@ class TicTacToe:
                 self.bot_move = False
                 print(row_1_col_1)
                 self.board[row_1_col_1[0]][row_1_col_1[1]] = 'o'
+                self.query += 1
 
-            if (self.query - 1) % 2 == 0:
-                self.game_over = self.check_win(self.board, 'x')
-            else:
+            self.game_over = self.check_win(self.board, 'x')
+            if not self.game_over:
                 self.game_over = self.check_win(self.board, 'o')
 
             if not self.stop_game:
