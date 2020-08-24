@@ -9,18 +9,21 @@ class Bot:
     def bots_move(self, board):
         attack = self.attack_or_defense(board, self.sign)
 
-        if attack != 'Nothing':
+        if attack:
             return attack
 
         defense = self.attack_or_defense(board, self.user)
 
-        if defense != 'Nothing':
+        if defense:
             return defense
 
         continue_move = self.continue_moving(board, self.sign)
 
-        if continue_move != 'Nothing':
+        if continue_move:
             return continue_move
+
+        if board[1][1] == 'x':
+            return self.strategy(board)
 
         return self.random_move(board)
 
@@ -32,6 +35,15 @@ class Bot:
             row = random.choice([0, 1, 2])
             col = random.choice([0, 1, 2])
             move = board[row][col]
+
+        return row, col
+
+    def strategy(self, board):
+        possible = [(0, 0), (2, 0), (0, 2), (2, 2)]
+        row, col = random.choice(possible)
+
+        while board[row][col] != 0:
+            row, col = random.choice(possible)
 
         return row, col
 
@@ -50,7 +62,7 @@ class Bot:
             elif board[0][i] == 0 and board[1][i] == 0 and board[2][i] == sign:
                 return 1, i
             elif board[0][i] == 0 and board[1][i] == sign and board[2][i] == 0:
-                return 0, i
+                return 2, i
 
         if board[0][0] == sign and board[1][1] == 0 and board[2][2] == 0:
             return 2, 2
@@ -66,7 +78,7 @@ class Bot:
         elif board[0][2] == 0 and board[1][1] == sign and board[2][0] == 0:
             return 0, 2
 
-        return 'Nothing'
+        return False
 
     def attack_or_defense(self, board, sign):
         for i in range(3):
@@ -83,7 +95,7 @@ class Bot:
             elif board[0][i] == sign and board[1][i] == 0 and board[2][i] == sign:
                 return 1, i
             elif board[0][i] == 0 and board[1][i] == sign and board[2][i] == sign:
-                return 0, i
+                return 2, i
 
         if board[0][0] == sign and board[1][1] == sign and board[2][2] == 0:
             return 2, 2
@@ -99,4 +111,4 @@ class Bot:
         elif board[0][2] == 0 and board[1][1] == sign and board[2][0] == sign:
             return 0, 2
 
-        return 'Nothing'
+        return False
